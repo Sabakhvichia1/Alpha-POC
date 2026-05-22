@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { mockEmployees, formatCurrency, getStatusColor, Employee } from '@/lib/mockData';
+import { mockEmployees, formatCurrency, getStatusColor, Employee, PayrollRecord, generatePayrollRecords } from '@/lib/mockData';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
+  const [payrollRecords, setPayrollRecords] = useState<PayrollRecord[]>(generatePayrollRecords());
+  const [paymentHistory, setPaymentHistory] = useState<PayrollRecord[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -84,6 +86,22 @@ export default function EmployeesPage() {
         joinDate: new Date().toISOString().split('T')[0],
       };
       setEmployees([...employees, newEmployee]);
+      
+      // Create payroll record for new employee
+      const today = new Date();
+      const dueDate = new Date(today);
+      dueDate.setDate(dueDate.getDate() + 7);
+      
+      const newPayrollRecord: PayrollRecord = {
+        id: `payroll-${newEmployee.id}`,
+        employeeId: newEmployee.id,
+        employeeName: newEmployee.name,
+        amount: parseFloat(formData.salary) / 26, // Bi-weekly
+        dueDate: dueDate.toISOString().split('T')[0],
+        status: 'pending',
+      };
+      
+      setPayrollRecords([...payrollRecords, newPayrollRecord]);
     }
 
     handleCloseModal();
@@ -93,6 +111,32 @@ export default function EmployeesPage() {
     if (confirm('Are you sure you want to delete this employee?')) {
       setEmployees(employees.filter((emp) => emp.id !== id));
     }
+  };
+
+  const handleRunPayrollForEmployee = (employeeId: string) => {
+    // Find the payroll record for this employee
+    const recordIndex = payrollRecords.findIndex((r) => r.employeeId === employeeId);
+    
+    if (recordIndex !== -1) {
+      const record = payrollRecords[recordIndex];
+      
+      // Mark as paid and add payment date
+      const paidRecord = {
+        ...record,
+        status: 'paid' as const,
+        paymentDate: new Date().toISOString().split('T')[0],
+      };
+      
+      // Remove from pending and add to history
+      const updatedRecords = payrollRecords.filter((_, i) => i !== recordIndex);
+      setPayrollRecords(updatedRecords);
+      setPaymentHistory([paidRecord, ...paymentHistory]);
+    }
+  };
+
+  const getEmployeePayrollStatus = (employeeId: string) => {
+    const record = payrollRecords.find((r) => r.employeeId === employeeId);
+    return record ? record.status : 'paid';
   };
 
   if (!mounted) return null;
@@ -124,6 +168,7 @@ export default function EmployeesPage() {
                 <th className="text-left py-4 px-6 font-semibold text-gray-900">Status</th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-900">Salary</th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-900">Payment Method</th>
+                <th className="text-left py-4 px-6 font-semibold text-gray-900">Payroll Status</th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-900">Actions</th>
               </tr>
             </thead>
@@ -149,7 +194,20 @@ export default function EmployeesPage() {
                     {employee.paymentMethod === 'check' && 'Check'}
                   </td>
                   <td className="py-4 px-6">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(getEmployeePayrollStatus(employee.id))}`}>
+                      {getEmployeePayrollStatus(employee.id).charAt(0).toUpperCase() + getEmployeePayrollStatus(employee.id).slice(1)}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6">
                     <div className="flex gap-2">
+                      {getEmployeePayrollStatus(employee.id) === 'pending' && (
+                        <button
+                          onClick={() => handleRunPayrollForEmployee(employee.id)}
+                          className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200 transition font-medium"
+                        >
+                          Run Payroll
+                        </button>
+                      )}
                       <button
                         onClick={() => handleOpenModal(employee)}
                         className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
