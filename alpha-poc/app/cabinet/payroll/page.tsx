@@ -7,6 +7,7 @@ import {
   formatDate,
   getStatusColor,
   PayrollRecord,
+  mockEmployees,
 } from '@/lib/mockData';
 
 export default function PayrollPage() {
@@ -39,6 +40,27 @@ export default function PayrollPage() {
     setPayrollRecords(pendingRecords);
   };
 
+  const handleRunPayrollForEmployee = (employeeId: string) => {
+    // Find the payroll record for this employee
+    const recordIndex = payrollRecords.findIndex((r) => r.employeeId === employeeId);
+    
+    if (recordIndex !== -1) {
+      const record = payrollRecords[recordIndex];
+      
+      // Mark as paid and add payment date
+      const paidRecord = {
+        ...record,
+        status: 'paid' as const,
+        paymentDate: new Date().toISOString().split('T')[0],
+      };
+      
+      // Remove from pending and add to history
+      const updatedRecords = payrollRecords.filter((_, i) => i !== recordIndex);
+      setPayrollRecords(updatedRecords);
+      setPaymentHistory([paidRecord, ...paymentHistory]);
+    }
+  };
+
   const totalPending = payrollRecords.reduce((sum, r) => sum + r.amount, 0);
   const totalPaid = paymentHistory.reduce((sum, r) => sum + r.amount, 0);
 
@@ -57,7 +79,7 @@ export default function PayrollPage() {
           disabled={payrollRecords.length === 0}
           className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          ▶ Run Payroll
+          ▶ Run All Payroll
         </button>
       </div>
 
@@ -90,6 +112,7 @@ export default function PayrollPage() {
                   <th className="text-left py-4 px-6 font-semibold text-gray-900">Amount</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-900">Due Date</th>
                   <th className="text-left py-4 px-6 font-semibold text-gray-900">Status</th>
+                  <th className="text-left py-4 px-6 font-semibold text-gray-900">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -102,6 +125,14 @@ export default function PayrollPage() {
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(record.status)}`}>
                         {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                       </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <button
+                        onClick={() => handleRunPayrollForEmployee(record.employeeId)}
+                        className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200 transition font-medium"
+                      >
+                        Process
+                      </button>
                     </td>
                   </tr>
                 ))}
