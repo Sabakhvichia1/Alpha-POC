@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
         <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
           <p className="text-gray-600 text-xs sm:text-sm font-medium">{t.totalExpenses}</p>
           <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{formatCurrency(totalExpenses)}</p>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">{t.ssGeExpenses} + {t.salaries}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">{t.rsGeTaxes} + {t.salaries}</p>
         </div>
 
         <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
@@ -121,7 +121,7 @@ export default function AnalyticsPage() {
                 <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900">{t.month}</th>
                 <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden lg:table-cell">{t.grossRevenue}</th>
                 <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden md:table-cell">{t.totalExpenses}</th>
-                <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden lg:table-cell">{t.ssGeExpenses}</th>
+                <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden lg:table-cell">{t.rsGeTaxes}</th>
                 <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden sm:table-cell">{t.taxesPaid}</th>
                 <th className="text-right py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900">{t.netProfit}</th>
               </tr>
@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
                   <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900">{month.month} {month.year}</td>
                   <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-gray-900 hidden lg:table-cell">{formatCurrency(month.grossRevenue)}</td>
                   <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-gray-900 hidden md:table-cell">{formatCurrency(month.totalExpenses)}</td>
-                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-gray-600 hidden lg:table-cell">{formatCurrency(month.ssGeExpenses)}</td>
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-gray-600 hidden lg:table-cell">{formatCurrency(month.rsGeTaxes)}</td>
                   <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-gray-900 hidden sm:table-cell">{formatCurrency(month.totalTaxesPaid)}</td>
                   <td className="py-3 sm:py-4 px-3 sm:px-6 text-right font-semibold text-green-600">
                     {formatCurrency(month.netProfit)}
@@ -145,7 +145,7 @@ export default function AnalyticsPage() {
                 <td className="py-3 sm:py-4 px-3 sm:px-6">{t.total}</td>
                 <td className="py-3 sm:py-4 px-3 sm:px-6 text-right hidden lg:table-cell">{formatCurrency(totalRevenue)}</td>
                 <td className="py-3 sm:py-4 px-3 sm:px-6 text-right hidden md:table-cell">{formatCurrency(totalExpenses)}</td>
-                <td className="py-3 sm:py-4 px-3 sm:px-6 text-right hidden lg:table-cell">{formatCurrency(data.reduce((sum, d) => sum + d.ssGeExpenses, 0))}</td>
+                <td className="py-3 sm:py-4 px-3 sm:px-6 text-right hidden lg:table-cell">{formatCurrency(data.reduce((sum, d) => sum + d.rsGeTaxes, 0))}</td>
                 <td className="py-3 sm:py-4 px-3 sm:px-6 text-right hidden sm:table-cell">{formatCurrency(totalTaxes)}</td>
                 <td className="py-3 sm:py-4 px-3 sm:px-6 text-right text-green-600">{formatCurrency(totalProfit)}</td>
               </tr>

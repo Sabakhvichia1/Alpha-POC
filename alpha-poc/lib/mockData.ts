@@ -50,21 +50,13 @@ export interface PaymentSettings {
   emailNotifications: boolean;
 }
 
-export interface SSGeExpenses {
-  standardListings: number;
-  vipListings: number;
-  vipPlusListings: number;
-  superVipListings: number;
-  adBoostBudget: number;
-}
-
 export interface MonthlyFinancials {
   id: string;
   month: string;
   year: number;
   grossRevenue: number;
   totalExpenses: number;
-  ssGeExpenses: number;
+  rsGeTaxes: number;
   totalTaxesPaid: number;
   netProfit: number;
   isPlanned: boolean;
@@ -264,31 +256,6 @@ export const defaultPaymentSettings: PaymentSettings = {
   emailNotifications: true,
 };
 
-export const defaultSSGeExpenses: SSGeExpenses = {
-  standardListings: 10,
-  vipListings: 3,
-  vipPlusListings: 1,
-  superVipListings: 0,
-  adBoostBudget: 500,
-};
-
-export const SS_GE_PRICING = {
-  standardListing: 15,
-  vipListing: 50,
-  vipPlusListing: 100,
-  superVipListing: 200,
-};
-
-export const calculateSSGeExpenses = (expenses: SSGeExpenses): number => {
-  return (
-    expenses.standardListings * SS_GE_PRICING.standardListing +
-    expenses.vipListings * SS_GE_PRICING.vipListing +
-    expenses.vipPlusListings * SS_GE_PRICING.vipPlusListing +
-    expenses.superVipListings * SS_GE_PRICING.superVipListing +
-    expenses.adBoostBudget
-  );
-};
-
 export const generateMockMonthlyFinancials = (isPlanned: boolean): MonthlyFinancials[] => {
   const currentYear = 2026;
   const months = [
@@ -301,10 +268,10 @@ export const generateMockMonthlyFinancials = (isPlanned: boolean): MonthlyFinanc
     const multiplier = isPlanned ? 1.35 : 1;
     const grossRevenue = baseRevenue * multiplier;
     
-    const ssGeExpenses = calculateSSGeExpenses(defaultSSGeExpenses);
+    const rsGeTaxes = grossRevenue * 0.20; // 20% income tax
     const salariesExpense = 12400;
     const otherExpenses = 2000;
-    const totalExpenses = ssGeExpenses + salariesExpense + otherExpenses;
+    const totalExpenses = rsGeTaxes + salariesExpense + otherExpenses;
     
     const taxableIncome = grossRevenue - totalExpenses;
     const totalTaxesPaid = isPlanned 
@@ -319,7 +286,7 @@ export const generateMockMonthlyFinancials = (isPlanned: boolean): MonthlyFinanc
       year: currentYear,
       grossRevenue,
       totalExpenses,
-      ssGeExpenses,
+      rsGeTaxes,
       totalTaxesPaid,
       netProfit,
       isPlanned,
