@@ -20,6 +20,7 @@ export default function EmployeesPage() {
     employmentType: 'monthly' as 'hourly' | 'daily' | 'monthly',
     pensionScheme: true,
     taxStatus: 'standard' as 'standard' | 'small-business',
+    manualMonthlyAdjustment: '' as string, // New field for manual adjustment
   });
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function EmployeesPage() {
         employmentType: employee.employmentType,
         pensionScheme: employee.pensionScheme,
         taxStatus: employee.taxStatus,
+        manualMonthlyAdjustment: '',
       });
     } else {
       setEditingId(null);
@@ -52,6 +54,7 @@ export default function EmployeesPage() {
         employmentType: 'monthly' as 'hourly' | 'daily' | 'monthly',
         pensionScheme: true,
         taxStatus: 'standard' as 'standard' | 'small-business',
+        manualMonthlyAdjustment: '',
       });
     }
     setShowModal(true);
@@ -293,17 +296,111 @@ export default function EmployeesPage() {
                 />
               </div>
 
+              {/* Employment Type Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Annual Salary</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Employment Type
+                </label>
+                <select
+                  value={formData.employmentType}
+                  onChange={(e) => setFormData({ ...formData, employmentType: e.target.value as any })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                >
+                  <option value="monthly">Monthly (Fixed Salary)</option>
+                  <option value="daily">Daily (Rate × Days Worked)</option>
+                  <option value="hourly">Hourly (Rate × Hours Worked)</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.employmentType === 'monthly' && 'Fixed monthly payment'}
+                  {formData.employmentType === 'daily' && 'Payment based on days worked'}
+                  {formData.employmentType === 'hourly' && 'Payment based on hours worked'}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {formData.employmentType === 'monthly' && 'Monthly Salary (₾)'}
+                  {formData.employmentType === 'daily' && 'Daily Rate (₾)'}
+                  {formData.employmentType === 'hourly' && 'Hourly Rate (₾)'}
+                </label>
                 <input
                   type="number"
                   required
                   value={formData.salary}
                   onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="100000"
+                  placeholder={
+                    formData.employmentType === 'monthly' ? '3000' :
+                    formData.employmentType === 'daily' ? '150' : '20'
+                  }
+                  step="0.01"
                 />
               </div>
+
+              {/* Manual Monthly Adjustment */}
+              <div className="border-t border-gray-200 pt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Manual Monthly Adjustment (Optional)
+                </label>
+                <input
+                  type="number"
+                  value={formData.manualMonthlyAdjustment}
+                  onChange={(e) => setFormData({ ...formData, manualMonthlyAdjustment: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Override for current month (e.g., 2500)"
+                  step="0.01"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Leave empty to use calculated salary. Enter amount to override for this month only (for bonuses, unpaid leave, etc.)
+                </p>
+              </div>
+
+              {/* Tax Settings */}
+              <div className="border-t border-gray-200 pt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tax Status
+                </label>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="taxStatus"
+                      value="standard"
+                      checked={formData.taxStatus === 'standard'}
+                      onChange={(e) => setFormData({ ...formData, taxStatus: e.target.value as any })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <span className="text-sm text-gray-700">Standard Employment (20% income tax + 2-4% pension)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="taxStatus"
+                      value="small-business"
+                      checked={formData.taxStatus === 'small-business'}
+                      onChange={(e) => setFormData({ ...formData, taxStatus: e.target.value as any })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <span className="text-sm text-gray-700">Small Business (1% on turnover under ₾500,000)</span>
+                  </label>
+                </div>
+              </div>
+
+              {formData.taxStatus === 'standard' && (
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.pensionScheme}
+                      onChange={(e) => setFormData({ ...formData, pensionScheme: e.target.checked })}
+                      className="w-4 h-4 text-blue-600 rounded"
+                    />
+                    <span className="text-sm text-gray-700">
+                      Enrolled in Pension Scheme (4% total vs 2% total)
+                    </span>
+                  </label>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
