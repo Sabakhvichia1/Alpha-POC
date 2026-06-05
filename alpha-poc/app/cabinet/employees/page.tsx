@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { mockEmployees, formatCurrency, getStatusColor, Employee, PayrollRecord, generatePayrollRecords } from '@/lib/mockData';
+import { mockEmployees, formatCurrency, getStatusColor, Employee, PayrollRecord, generatePayrollRecords, calculateGeorgianTaxes } from '@/lib/mockData';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
@@ -17,6 +17,9 @@ export default function EmployeesPage() {
     salary: '',
     paymentMethod: 'direct-deposit' as 'direct-deposit' | 'bank-transfer' | 'check',
     email: '',
+    employmentType: 'monthly' as 'hourly' | 'daily' | 'monthly',
+    pensionScheme: true,
+    taxStatus: 'standard' as 'standard' | 'small-business',
   });
 
   useEffect(() => {
@@ -33,6 +36,9 @@ export default function EmployeesPage() {
         salary: employee.salary.toString(),
         paymentMethod: employee.paymentMethod,
         email: employee.email,
+        employmentType: employee.employmentType,
+        pensionScheme: employee.pensionScheme,
+        taxStatus: employee.taxStatus,
       });
     } else {
       setEditingId(null);
@@ -43,6 +49,9 @@ export default function EmployeesPage() {
         salary: '',
         paymentMethod: 'direct-deposit' as 'direct-deposit' | 'bank-transfer' | 'check',
         email: '',
+        employmentType: 'monthly' as 'hourly' | 'daily' | 'monthly',
+        pensionScheme: true,
+        taxStatus: 'standard' as 'standard' | 'small-business',
       });
     }
     setShowModal(true);
@@ -84,6 +93,10 @@ export default function EmployeesPage() {
         paymentMethod: formData.paymentMethod,
         email: formData.email,
         joinDate: new Date().toISOString().split('T')[0],
+        employmentType: formData.employmentType,
+        monthlyBaseline: parseFloat(formData.salary),
+        pensionScheme: formData.pensionScheme,
+        taxStatus: formData.taxStatus,
       };
       setEmployees([...employees, newEmployee]);
       
@@ -92,13 +105,20 @@ export default function EmployeesPage() {
       const dueDate = new Date(today);
       dueDate.setDate(dueDate.getDate() + 7);
       
+      const grossSalary = parseFloat(formData.salary);
+      const taxes = calculateGeorgianTaxes(grossSalary, formData.taxStatus, formData.pensionScheme);
+      
       const newPayrollRecord: PayrollRecord = {
         id: `payroll-${newEmployee.id}`,
         employeeId: newEmployee.id,
         employeeName: newEmployee.name,
-        amount: parseFloat(formData.salary) / 26, // Bi-weekly
+        amount: taxes.netSalary,
         dueDate: dueDate.toISOString().split('T')[0],
         status: 'pending',
+        grossSalary: grossSalary,
+        incomeTax: taxes.incomeTax,
+        pensionContribution: taxes.pensionEmployee,
+        netSalary: taxes.netSalary,
       };
       
       setPayrollRecords([...payrollRecords, newPayrollRecord]);
@@ -142,15 +162,15 @@ export default function EmployeesPage() {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Employees</h1>
-          <p className="text-gray-600 mt-2">Manage your team and payroll information.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Employees</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">Manage your team and payroll information.</p>
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium w-full sm:w-auto"
         >
           + Add Employee
         </button>
@@ -159,63 +179,63 @@ export default function EmployeesPage() {
       {/* Employees Table */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Name</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Role</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Status</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Salary</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Payment Method</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Payroll Status</th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-900">Actions</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900">Name</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden md:table-cell">Role</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden lg:table-cell">Status</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden sm:table-cell">Salary</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden xl:table-cell">Payment Method</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900 hidden lg:table-cell">Payroll Status</th>
+                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-gray-900">Actions</th>
               </tr>
             </thead>
             <tbody>
               {employees.map((employee) => (
                 <tr key={employee.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                  <td className="py-4 px-6">
+                  <td className="py-3 sm:py-4 px-3 sm:px-6">
                     <div>
                       <p className="font-medium text-gray-900">{employee.name}</p>
-                      <p className="text-sm text-gray-500">{employee.email}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">{employee.email}</p>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-gray-900">{employee.role}</td>
-                  <td className="py-4 px-6">
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-900 hidden md:table-cell">{employee.role}</td>
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 hidden lg:table-cell">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(employee.status)}`}>
                       {employee.status.charAt(0).toUpperCase() + employee.status.slice(1).replace('-', ' ')}
                     </span>
                   </td>
-                  <td className="py-4 px-6 text-gray-900 font-medium">{formatCurrency(employee.salary)}</td>
-                  <td className="py-4 px-6 text-gray-600">
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-900 font-medium hidden sm:table-cell">{formatCurrency(employee.salary)}</td>
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-600 hidden xl:table-cell">
                     {employee.paymentMethod === 'direct-deposit' && 'Direct Deposit'}
                     {employee.paymentMethod === 'bank-transfer' && 'Bank Transfer'}
                     {employee.paymentMethod === 'check' && 'Check'}
                   </td>
-                  <td className="py-4 px-6">
+                  <td className="py-3 sm:py-4 px-3 sm:px-6 hidden lg:table-cell">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(getEmployeePayrollStatus(employee.id))}`}>
                       {getEmployeePayrollStatus(employee.id).charAt(0).toUpperCase() + getEmployeePayrollStatus(employee.id).slice(1)}
                     </span>
                   </td>
-                  <td className="py-4 px-6">
-                    <div className="flex gap-2">
+                  <td className="py-3 sm:py-4 px-3 sm:px-6">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       {getEmployeePayrollStatus(employee.id) === 'pending' && (
                         <button
                           onClick={() => handleRunPayrollForEmployee(employee.id)}
-                          className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200 transition font-medium"
+                          className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-green-100 text-green-700 rounded hover:bg-green-200 transition font-medium whitespace-nowrap"
                         >
                           Run Payroll
                         </button>
                       )}
                       <button
                         onClick={() => handleOpenModal(employee)}
-                        className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
+                        className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(employee.id)}
-                        className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
+                        className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
                       >
                         Delete
                       </button>
@@ -230,9 +250,9 @@ export default function EmployeesPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
               {editingId ? 'Edit Employee' : 'Add New Employee'}
             </h2>
 

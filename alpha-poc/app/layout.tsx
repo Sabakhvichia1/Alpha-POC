@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AppProvider } from "@/contexts/AppContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PayFlow - Payroll Management",
-  description: "Simple, automated payroll management for modern companies",
+  title: "ფინანსური მონიტორინგი - საქართველო",
+  description: "ფინანსური აღრიცხვის და ანალიტიკის სისტემა საქართველოს საგადასახადო კოდექსის შესაბამისად",
 };
 
 export default function RootLayout({
@@ -27,7 +28,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white">{children}</body>
+      <body className="min-h-full flex flex-col bg-white">
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }

@@ -26,11 +26,11 @@ export default function SettingsPage() {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-4 sm:space-y-6 max-w-2xl">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">Configure your payment preferences and bank account.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-2">Configure your payment preferences and bank account.</p>
       </div>
 
       {/* Success Message */}
@@ -41,15 +41,15 @@ export default function SettingsPage() {
       )}
 
       {/* Automated Payments Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Automated Payments</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Automated Payments</h2>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Toggle */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-900">Enable Automated Payroll</p>
-              <p className="text-sm text-gray-600 mt-1">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-sm sm:text-base font-medium text-gray-900">Enable Automated Payroll</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">
                 Automatically run payroll on your selected schedule
               </p>
             </div>
@@ -108,8 +108,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Bank Account Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Bank Account</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Bank Account</h2>
 
         <div className="space-y-4">
           <div>
@@ -187,14 +187,14 @@ export default function SettingsPage() {
       </div>
 
       {/* Notifications Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Notifications</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Notifications</h2>
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-900">Email Notifications</p>
-              <p className="text-sm text-gray-600 mt-1">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              <p className="text-sm sm:text-base font-medium text-gray-900">Email Notifications</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">
                 Receive updates about payroll runs, payments, and alerts
               </p>
             </div>
@@ -229,7 +229,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Save Button */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={handleSave}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
@@ -242,9 +242,9 @@ export default function SettingsPage() {
       </div>
 
       {/* Additional Info */}
-      <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
-        <h3 className="font-semibold text-gray-900 mb-3">Need Help?</h3>
-        <ul className="space-y-2 text-sm text-gray-600">
+      <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 sm:p-6">
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">Need Help?</h3>
+        <ul className="space-y-2 text-xs sm:text-sm text-gray-600">
           <li>• Check our <a href="#" className="text-blue-600 hover:underline">documentation</a> for setup guides</li>
           <li>• Contact <a href="#" className="text-blue-600 hover:underline">support@payflow.com</a> for assistance</li>
           <li>• View our <a href="#" className="text-blue-600 hover:underline">security practices</a></li>
