@@ -259,8 +259,8 @@ export const defaultPaymentSettings: PaymentSettings = {
 export const generateMockMonthlyFinancials = (isPlanned: boolean): MonthlyFinancials[] => {
   const currentYear = 2026;
   const months = [
-    'იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი',
-    'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
   return months.map((month, index) => {
@@ -316,11 +316,12 @@ export const getStatusColor = (status: string): string => {
 };
 
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('ka-GE', {
+  // Format with USD to get proper number formatting, then replace $ with ₾
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'GEL',
+    currency: 'USD',
     minimumFractionDigits: 2,
-  }).format(amount).replace('GEL', '₾');
+  }).format(amount).replace('$', '₾');
 };
 
 export const formatDate = (dateString: string): string => {

@@ -78,25 +78,25 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
-            <p className="text-gray-600 text-xs sm:text-sm font-medium">{t.totalPayrollThisMonth}</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
+            <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">{t.totalPayrollThisMonth}</p>
+            <p className="font-bold text-gray-900 break-words" style={{ fontSize: '19px' }}>
               {formatCurrency(totalPayroll)}
             </p>
           </div>
 
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
-            <p className="text-gray-600 text-xs sm:text-sm font-medium">{t.pendingPayments}</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{pendingPayments}</p>
+            <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">{t.pendingPayments}</p>
+            <p className="font-bold text-gray-900" style={{ fontSize: '19px' }}>{pendingPayments}</p>
           </div>
 
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
-            <p className="text-gray-600 text-xs sm:text-sm font-medium">{t.activeEmployees}</p>
-            <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{activeEmployees}</p>
+            <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">{t.activeEmployees}</p>
+            <p className="font-bold text-gray-900" style={{ fontSize: '19px' }}>{activeEmployees}</p>
           </div>
 
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
-            <p className="text-gray-600 text-xs sm:text-sm font-medium">{t.nextScheduledRun}</p>
-            <p className="text-base sm:text-lg font-bold text-gray-900 mt-2">{formatDate(nextRun.toISOString())}</p>
+            <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">{t.nextScheduledRun}</p>
+            <p className="font-bold text-gray-900 break-words" style={{ fontSize: '14px' }}>{formatDate(nextRun.toISOString())}</p>
           </div>
         </div>
 

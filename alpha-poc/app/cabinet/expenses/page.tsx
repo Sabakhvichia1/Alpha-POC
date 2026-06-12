@@ -67,8 +67,8 @@ export default function RSGeExpensesPage() {
   }, []);
 
   const generateMockDeclarations = (): TaxDeclaration[] => {
-    const months = ['იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი', 
-                    'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                    'July', 'August', 'September', 'October', 'November', 'December'];
     const year = 2026;
     
     return months.slice(0, 6).map((month, index) => {
@@ -175,26 +175,26 @@ export default function RSGeExpensesPage() {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4 sm:p-6">
-          <p className="text-xs sm:text-sm font-medium text-gray-600">
-            {language === 'ka' ? 'გადასახდელი გადასახადები' : 'Unpaid Taxes'}
+      <div className="grid grid-cols-1 gap-4">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4">
+          <p className="text-sm font-medium text-gray-600">
+            {language === 'ka' ? 'გადასახადი' : 'Unpaid Taxes'}
           </p>
-          <p className="text-2xl sm:text-3xl font-bold text-red-600 mt-2">{formatCurrency(totalUnpaid)}</p>
+          <p className="font-bold text-red-600 mt-2 break-words" style={{ fontSize: '19px' }}>{formatCurrency(totalUnpaid)}</p>
         </div>
         
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4 sm:p-6">
-          <p className="text-xs sm:text-sm font-medium text-gray-600">
-            {language === 'ka' ? 'გადახდილი გადასახადები' : 'Paid Taxes'}
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4">
+          <p className="text-sm font-medium text-gray-600">
+            {language === 'ka' ? 'გადახდილი' : 'Paid Taxes'}
           </p>
-          <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-2">{formatCurrency(totalPaid)}</p>
+          <p className="font-bold text-green-600 mt-2 break-words" style={{ fontSize: '19px' }}>{formatCurrency(totalPaid)}</p>
         </div>
         
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4 sm:p-6">
-          <p className="text-xs sm:text-sm font-medium text-gray-600">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4">
+          <p className="text-sm font-medium text-gray-600">
             {language === 'ka' ? 'მიმდინარე თვის გადასახადები' : 'Current Month Taxes'}
           </p>
-          <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-2">{formatCurrency(taxes.total)}</p>
+          <p className="font-bold text-blue-600 mt-2 break-words" style={{ fontSize: '19px' }}>{formatCurrency(taxes.total)}</p>
         </div>
       </div>
 

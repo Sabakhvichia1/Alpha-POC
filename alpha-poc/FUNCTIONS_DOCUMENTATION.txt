@@ -1,0 +1,607 @@
+================================================================================
+                    ALPHA-POC FUNCTIONS DOCUMENTATION
+          Complete Guide to All Functions in the Application
+================================================================================
+
+TABLE OF CONTENTS
+=================
+1. LIB/MOCKDATA.TS - Data Generation & Utilities
+2. LIB/TRANSLATIONS.TS - Translation System
+3. CONTEXTS/APPCONTEXT.TSX - Global State Management
+4. APP/PAGE.TSX - Landing Page
+5. APP/CABINET/PAGE.TSX - Dashboard Page
+6. APP/CABINET/EMPLOYEES/PAGE.TSX - Employee Management
+7. APP/CABINET/PAYROLL/PAGE.TSX - Payroll Processing
+8. APP/CABINET/EXPENSES/PAGE.TSX - RS.ge Tax Tracking
+9. APP/CABINET/ANALYTICS/PAGE.TSX - Financial Analytics
+10. APP/CABINET/SETTINGS/PAGE.TSX - Settings Management
+11. APP/CABINET/LAYOUT.TSX - Cabinet Layout & Navigation
+
+================================================================================
+1. LIB/MOCKDATA.TS - DATA GENERATION & UTILITIES
+================================================================================
+
+▸ calculateGeorgianTaxes(grossSalary, taxStatus, pensionScheme)
+  PURPOSE: Calculate all Georgian taxes for an employee's salary
+  PARAMETERS:
+    - grossSalary (number): Employee's gross monthly salary
+    - taxStatus ('standard' | 'small-business'): Tax regime type
+    - pensionScheme (boolean): Whether employee participates in pension
+  RETURNS: Object with:
+    - incomeTax: 20% for standard, 1% for small business
+    - pensionEmployee: 2% if enrolled (employee contribution)
+    - pensionEmployer: 2% if enrolled (employer contribution)
+    - netSalary: Take-home after deductions
+  EXAMPLE:
+    calculateGeorgianTaxes(3000, 'standard', true)
+    → { incomeTax: 600, pensionEmployee: 60, pensionEmployer: 60, netSalary: 2340 }
+
+▸ calculateEmployeeSalary(employee)
+  PURPOSE: Calculate actual monthly salary based on employment type
+  PARAMETERS:
+    - employee (Employee): Employee object with type and rates
+  LOGIC:
+    - If manualOverride exists → use that amount
+    - If hourly → hourlyRate × hoursWorked
+    - If daily → dailyRate × daysWorked
+    - If monthly → monthlyBaseline or salary
+  RETURNS: number (calculated monthly salary)
+  EXAMPLE:
+    employee = { employmentType: 'hourly', hourlyRate: 15, hoursWorked: 160 }
+    → Returns: 2400
+
+▸ generatePayrollRecords()
+  PURPOSE: Create payroll records for all active employees
+  PARAMETERS: None
+  LOGIC:
+    - Loops through mockEmployees array
+    - Calculates gross salary using calculateEmployeeSalary()
+    - Applies Georgian taxes using calculateGeorgianTaxes()
+    - Sets due date to 7 days from today
+    - Creates PayrollRecord for each employee with status 'pending'
+  RETURNS: Array of PayrollRecord objects
+  USAGE: Called when initializing payroll page
+
+▸ generateMockMonthlyFinancials(isPlanned)
+  PURPOSE: Generate financial data for 12 months with tax scenarios
+  PARAMETERS:
+    - isPlanned (boolean): true = optimized tax strategy, false = standard
+  LOGIC:
+    - Creates 12 month records (იანვარი through დეკემბერი)
+    - Base revenue: 15000-20000 GEL with random variation
+    - If planned: multiply by 1.35 (growth projection)
+    - Calculate RS.ge taxes at 20% of gross revenue
+    - Add salary expenses (12,400 GEL) + other (2,000 GEL)
+    - Tax calculation:
+      • Planned: 1% on turnover (small business regime)
+      • Actual: 15% on dividends (standard employment)
+  RETURNS: Array of 12 MonthlyFinancials objects
+  USAGE: Used in analytics page to show financial trends
+
+▸ getStatusColor(status)
+  PURPOSE: Return Tailwind CSS classes for status badges
+  PARAMETERS:
+    - status (string): Status value (active, pending, paid, etc.)
+  RETURNS: String with Tailwind background and text color classes
+  MAPPING:
+    'active' / 'paid' → green
+    'on-leave' / 'pending' / 'processing' → yellow
+    'terminated' / 'failed' → red
+    default → gray
+  USAGE: Styling status badges across all pages
+
+▸ formatCurrency(amount)
+  PURPOSE: Format numbers as Georgian Lari currency
+  PARAMETERS:
+    - amount (number): Amount to format
+  LOGIC:
+    - Uses Intl.NumberFormat with 'ka-GE' locale
+    - Currency: GEL (Georgian Lari)
+    - Minimum 2 decimal places
+    - Replaces 'GEL' text with ₾ symbol
+  RETURNS: String (e.g., "₾3,000.00")
+  USAGE: Displaying all monetary values throughout app
+
+▸ formatDate(dateString)
+  PURPOSE: Format ISO date string to Georgian date format
+  PARAMETERS:
+    - dateString (string): ISO date string (YYYY-MM-DD)
+  LOGIC:
+    - Uses toLocaleDateString with 'ka-GE' locale
+    - Shows: year (numeric), month (long name), day (numeric)
+  RETURNS: String (e.g., "15 იანვარი, 2026")
+  USAGE: Displaying dates in Georgian format
+
+================================================================================
+2. LIB/TRANSLATIONS.TS - TRANSLATION SYSTEM
+================================================================================
+
+▸ getTranslation(lang)
+  PURPOSE: Get translation object for specified language
+  PARAMETERS:
+    - lang ('ka' | 'en'): Language code
+  RETURNS: Translation object with 60+ keys
+  STRUCTURE:
+    translations = {
+      ka: { key: 'Georgian text', ... },
+      en: { key: 'English text', ... }
+    }
+  USAGE: 
+    const t = getTranslation('ka')
+    console.log(t.dashboard) // "მთავარი"
+
+  TRANSLATION CATEGORIES:
+    • Navigation: appName, home, dashboard, employees, payroll, etc.
+    • Scenario Toggle: scenarioLabel, planned, actual
+    • Common: save, cancel, edit, delete, add, user
+    • Dashboard: All dashboard-specific terms
+    • Activity Types: Descriptions for activity log entries
+    • Landing Page: Marketing content and features
+    • Footer: Links and company info
+    • Analytics: Financial metrics and chart labels
+
+================================================================================
+3. CONTEXTS/APPCONTEXT.TSX - GLOBAL STATE MANAGEMENT
+================================================================================
+
+▸ AppProvider({ children })
+  PURPOSE: Provide global state to entire application
+  STATE MANAGEMENT:
+    - isPlanned: boolean (Planned vs Actual financial scenario)
+    - language: 'ka' | 'en' (Current UI language)
+    - mounted: boolean (Client-side hydration check)
+  LIFECYCLE:
+    1. On mount: Load language from localStorage
+    2. On language change: Save to localStorage
+  FUNCTIONS PROVIDED:
+    - toggleScenario(): Switch between planned/actual scenarios
+    - setLanguage(lang): Set specific language
+    - toggleLanguage(): Toggle between Georgian and English
+  USAGE: Wrap app in layout.tsx, access via useAppContext()
+
+▸ useAppContext()
+  PURPOSE: Hook to access global app context
+  RETURNS: AppContextType object with state and functions
+  ERROR HANDLING: Throws error if used outside AppProvider
+  USAGE:
+    const { language, toggleLanguage, isPlanned, toggleScenario } = useAppContext()
+
+================================================================================
+4. APP/PAGE.TSX - LANDING PAGE
+================================================================================
+
+▸ Home() [Main Component]
+  PURPOSE: Landing page with features and navigation to app
+  STATE: None (stateless presentation component)
+  FEATURES:
+    - Bilingual hero section with gradient background
+    - 6 feature cards describing app capabilities
+    - Footer with links (product, company, legal sections)
+    - "Get Started" button linking to /cabinet
+  STYLING: Blue-purple gradient theme, mobile responsive
+  NAVIGATION: Single button to /cabinet (main app)
+
+================================================================================
+5. APP/CABINET/PAGE.TSX - DASHBOARD PAGE
+================================================================================
+
+▸ DashboardPage() [Main Component]
+  PURPOSE: Main dashboard showing financial overview
+  STATE:
+    - mounted: boolean (hydration check)
+    - employees: Employee[] (loaded from localStorage)
+    - payrollRecords: PayrollRecord[] (loaded from localStorage)
+  
+  DERIVED VALUES:
+    - totalPayroll: Sum of all pending payroll amounts
+    - pendingCount: Number of pending payments
+    - activeCount: Number of active employees
+    - nextRun: Calculated next payroll date
+  
+  FUNCTIONS:
+    ▸ loadDataFromStorage()
+      - Loads employees from localStorage key 'employees'
+      - Loads payroll records from localStorage key 'payrollRecords'
+      - Falls back to mock data if localStorage empty
+    
+    ▸ handleNavigate(path)
+      - Uses Next.js router to navigate to specified path
+      - Used by Quick Actions buttons
+  
+  SECTIONS:
+    1. Summary Cards: Total payroll, pending payments, active employees, next run
+    2. Quick Actions Panel: 4 action buttons with navigation
+    3. Recent Activity: Last 5 activities from mock data
+    4. Upcoming Payroll: Next 5 pending payroll entries
+  
+  RESPONSIVE: Mobile-first design with collapsing columns
+
+================================================================================
+6. APP/CABINET/EMPLOYEES/PAGE.TSX - EMPLOYEE MANAGEMENT
+================================================================================
+
+▸ EmployeesPage() [Main Component]
+  PURPOSE: Manage employee records with CRUD operations
+  STATE:
+    - employees: Employee[] (employee list)
+    - payrollRecords: PayrollRecord[] (payroll data)
+    - showModal: boolean (add/edit modal visibility)
+    - isEdit: boolean (edit mode flag)
+    - currentEmployeeId: string | null (editing target)
+    - formData: Employee data for form
+    - mounted: boolean
+  
+  FUNCTIONS:
+
+    ▸ loadFromStorage()
+      - Load employees and payroll from localStorage
+      - Fallback to mockEmployees if empty
+      - Called on component mount
+
+    ▸ saveToStorage(employeeData, payrollData)
+      - Save to localStorage keys: 'employees', 'payrollRecords'
+      - Syncs data across app
+
+    ▸ openAddModal()
+      - Set showModal = true, isEdit = false
+      - Reset formData to default empty employee
+      - Open modal for adding new employee
+
+    ▸ openEditModal(employee)
+      - Load employee data into formData
+      - Set isEdit = true, currentEmployeeId = employee.id
+      - Open modal for editing
+
+    ▸ closeModal()
+      - Hide modal, reset form state
+      - Clear currentEmployeeId
+
+    ▸ handleInputChange(field, value)
+      - Update formData for specific field
+      - Handles nested fields (bankAccount)
+      - Type-safe updates
+
+    ▸ handleSubmit()
+      - Validate form data (name required)
+      - Calculate salary using calculateEmployeeSalary()
+      - If edit: Update existing employee
+      - If add: Create new employee with unique ID
+      - Auto-create payroll record with status 'pending'
+      - Save to localStorage and close modal
+
+    ▸ handleDelete(employeeId)
+      - Remove employee from list
+      - Remove associated payroll record
+      - Update localStorage
+      - Show confirmation (window.confirm)
+
+    ▸ handleRunPayroll(employeeId)
+      - Find employee's payroll record
+      - Mark status as 'paid', set paymentDate to today
+      - Update localStorage
+
+  FORM FIELDS:
+    - Name, Role, Email, Join Date
+    - Employment Type: Monthly/Daily/Hourly
+    - Rate fields (hourly/daily/monthly baseline)
+    - Manual Monthly Adjustment (optional override)
+    - Tax Status: Standard/Small Business
+    - Pension Scheme: Yes/No checkbox
+    - Status: Active/On Leave/Terminated
+
+  RESPONSIVE: Modal, table, and cards all mobile-optimized
+
+================================================================================
+7. APP/CABINET/PAYROLL/PAGE.TSX - PAYROLL PROCESSING
+================================================================================
+
+▸ PayrollPage() [Main Component]
+  PURPOSE: Process payroll and view payment history
+  STATE:
+    - payrollRecords: PayrollRecord[] (pending payments)
+    - paymentHistory: PayrollRecord[] (completed payments)
+    - mounted: boolean
+  
+  FUNCTIONS:
+
+    ▸ handleRunPayroll()
+      - Process ALL pending payroll at once
+      - Mark all pending records as 'paid'
+      - Set paymentDate to today
+      - Move paid records to paymentHistory
+      - Remove from payrollRecords
+      - Called by "Run All Payroll" button
+
+    ▸ handleRunPayrollForEmployee(employeeId)
+      - Process single employee's payroll
+      - Find record by employeeId
+      - Mark as 'paid', set paymentDate
+      - Move to payment history
+      - Remove from pending list
+      - Called by individual "Process" buttons
+
+  DERIVED VALUES:
+    - totalPending: Sum of all pending payroll amounts
+    - totalPaid: Sum of all paid amounts in history
+
+  TABLES:
+    1. Pending Payroll: Shows unpaid payroll with Process buttons
+    2. Payment History: Shows last 10 completed payments
+
+  RESPONSIVE: Tables scroll horizontally on mobile, columns hide on small screens
+
+================================================================================
+8. APP/CABINET/EXPENSES/PAGE.TSX - RS.GE TAX TRACKING
+================================================================================
+
+▸ RSGeExpensesPage() [Main Component]
+  PURPOSE: Track Georgian tax declarations and payments
+  STATE:
+    - mounted: boolean
+    - saved: boolean (save confirmation)
+    - activeTab: 'declarations' | 'payments' | 'summary'
+    - currentMonth: Object with grossIncome, vatBase, employeeSalaries, propertyValue
+    - declarations: TaxDeclaration[] (6 months of tax data)
+  
+  FUNCTIONS:
+
+    ▸ generateMockDeclarations()
+      - Create 6 months of mock tax declarations
+      - Calculate for each month:
+        • Income Tax: 20% of random revenue (15,000-20,000 GEL)
+        • VAT: 18% of revenue
+        • Pension Employee: 2% of salaries
+        • Pension Employer: 2% of salaries
+        • Property Tax: Fixed 500 GEL
+      - Set due dates (15th of following month)
+      - Mark older months as paid
+      - Returns TaxDeclaration[]
+
+    ▸ calculateCurrentTaxes()
+      - Calculate taxes for current month based on inputs
+      - Income Tax: grossIncome × 20%
+      - VAT: vatBase × 18%
+      - Pension: employeeSalaries × 2% (each, employee + employer)
+      - Property: propertyValue × 0.1%
+      - Returns object with all tax amounts + total
+
+    ▸ handleSave()
+      - Save currentMonth and declarations to localStorage
+      - Key: 'rsGeTaxData'
+      - Show success message for 3 seconds
+
+    ▸ markAsPaid(id, type)
+      - Mark specific tax type as paid for a declaration
+      - Types: 'income', 'vat', 'pension', 'property'
+      - Update paid flags in declaration
+      - Check if all taxes paid → set allPaid = true
+
+  TABS:
+    1. Declarations: Shows all months with individual tax breakdowns
+    2. Payments: Shows payment history table
+    3. Summary: Shows tax rates and RS.ge information
+
+  TAX TYPES TRACKED:
+    - საშემოსავლო გადასახადი (Income Tax) - 20%
+    - დღგ (VAT) - 18%
+    - საპენსიო შენატანი (Pension) - 2% + 2%
+    - ქონების გადასახადი (Property Tax) - 0.1%-1%
+
+  RESPONSIVE: Cards, tables, and buttons adapt to mobile screens
+
+================================================================================
+9. APP/CABINET/ANALYTICS/PAGE.TSX - FINANCIAL ANALYTICS
+================================================================================
+
+▸ AnalyticsPage() [Main Component]
+  PURPOSE: Display financial analytics with charts and metrics
+  STATE:
+    - data: MonthlyFinancials[] (12 months of financial data)
+    - mounted: boolean
+    - selectedMonth: string | null (for chart hover tooltip)
+  
+  FUNCTIONS:
+
+    ▸ useEffect(() => { setData(generateMockMonthlyFinancials(isPlanned)) }, [isPlanned])
+      - Regenerate financial data when scenario changes
+      - Data reflects either planned (optimized) or actual (standard) scenario
+
+  DERIVED VALUES:
+    - totalRevenue: Sum of all months' grossRevenue
+    - totalExpenses: Sum of all months' totalExpenses
+    - totalTaxes: Sum of all months' totalTaxesPaid
+    - totalProfit: Sum of all months' netProfit
+    - maxProfit: Maximum monthly profit (for chart scaling)
+
+  VISUALIZATIONS:
+    1. Summary Cards: 4 cards showing yearly totals
+    2. Bar Chart: Net profit dynamics for all 12 months
+       - Interactive hover tooltips
+       - Height scaled to maxProfit
+       - Shows Georgian month names
+    3. Detailed Table: All monthly data with 6 columns
+       - Responsive column hiding on small screens
+       - Hover effects on rows
+    4. Tax Strategy Card: Shows tax regime details
+    5. Key Metrics Card: Shows averages and profit margin
+
+  SCENARIOS:
+    - Planned: 1% turnover tax, higher revenue projection (×1.35)
+    - Actual: 20% income tax, 15% dividend tax, realistic revenue
+
+  RESPONSIVE: 4-column grid → 2-column → 1-column on smaller screens
+
+================================================================================
+10. APP/CABINET/SETTINGS/PAGE.TSX - SETTINGS MANAGEMENT
+================================================================================
+
+▸ SettingsPage() [Main Component]
+  PURPOSE: Configure payment settings and preferences
+  STATE:
+    - settings: PaymentSettings object
+    - mounted: boolean
+    - saved: boolean (save confirmation message)
+  
+  FUNCTIONS:
+
+    ▸ useEffect (on mount)
+      - Load settings from localStorage
+      - Key: 'paymentSettings'
+      - Fallback to defaultPaymentSettings if empty
+
+    ▸ handleSave()
+      - Save settings to localStorage
+      - Show success message for 3 seconds
+      - Updates all app-wide payment configurations
+
+  SETTINGS SECTIONS:
+
+    1. Automated Payments
+       - Toggle: Enable/Disable automated payroll
+       - Schedule: Weekly / Bi-weekly / Monthly (radio buttons)
+       - Only shows schedule when automated is enabled
+
+    2. Bank Account
+       - Account Holder Name (text input)
+       - Account Number (password input, masked)
+       - Routing Number (password input, masked)
+       - Security note: Encrypted storage disclaimer
+
+    3. Notifications
+       - Email Notifications toggle
+       - Shows notification types when enabled:
+         • Payroll run notifications
+         • Payment processing alerts
+         • Failed payment notifications
+         • Employee status changes
+
+  UI FEATURES:
+    - Custom toggle switches (blue when on, gray when off)
+    - Password-masked sensitive fields
+    - Conditional rendering based on toggle states
+    - Help section with documentation links
+
+  RESPONSIVE: All sections stack vertically on mobile
+
+================================================================================
+11. APP/CABINET/LAYOUT.TSX - CABINET LAYOUT & NAVIGATION
+================================================================================
+
+▸ CabinetLayout({ children }) [Main Component]
+  PURPOSE: Provide navigation sidebar and top bar for all cabinet pages
+  STATE:
+    - sidebarOpen: boolean (mobile sidebar visibility)
+  
+  CONTEXT USAGE:
+    - isPlanned: For scenario toggle display
+    - language: For navigation labels
+    - toggleScenario(): Switch planned/actual mode
+    - toggleLanguage(): Switch Georgian/English
+
+  FUNCTIONS:
+
+    ▸ isActive(href)
+      - Determine if navigation link is currently active
+      - Special case: /cabinet must match exactly
+      - Other routes: match if pathname starts with href
+      - Returns: boolean
+
+  STRUCTURE:
+
+    1. Sidebar (Desktop: Fixed, Mobile: Slide-in overlay)
+       - App name header with close button (mobile only)
+       - Navigation links:
+         • Dashboard (/cabinet)
+         • Employees (/cabinet/employees)
+         • Payroll (/cabinet/payroll)
+         • Analytics (/cabinet/analytics)
+         • RS.ge Taxes (/cabinet/expenses)
+         • Settings (/cabinet/settings)
+       - Home link in footer section
+
+    2. Top Bar
+       - Mobile menu button (hamburger icon)
+       - App name
+       - Language toggle button (ქარ ⟷ EN)
+       - Scenario toggle (Planned/Actual) - desktop only
+       - User indicator
+
+    3. Mobile Scenario Toggle
+       - Appears below top bar on mobile screens
+       - Same functionality as desktop toggle
+
+    4. Content Area
+       - Gradient background (blue → indigo → purple)
+       - Scrollable content with padding
+       - Children pages render here
+
+  NAVIGATION STATES:
+    - Active link: Blue background (bg-blue-600)
+    - Inactive link: Gray text, hover → gray background
+    - Mobile: Clicking link closes sidebar automatically
+
+  RESPONSIVE BEHAVIOR:
+    - Desktop (lg:): Sidebar always visible, 256px width
+    - Mobile: Sidebar hidden by default, slides in from left
+    - Overlay: Dark backdrop when mobile sidebar open
+    - Toggle visibility: Some controls hidden on mobile
+
+================================================================================
+UTILITY PATTERNS & BEST PRACTICES
+================================================================================
+
+▸ HYDRATION SAFETY PATTERN
+  All pages use mounted state to prevent hydration mismatches:
+  ```
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+  ```
+  This ensures localStorage and client-only code runs after hydration.
+
+▸ LOCALSTORAGE KEYS
+  - 'appLanguage': 'ka' | 'en' (user's language preference)
+  - 'employees': Employee[] (employee records)
+  - 'payrollRecords': PayrollRecord[] (pending payroll)
+  - 'paymentSettings': PaymentSettings (settings config)
+  - 'rsGeTaxData': { currentMonth, declarations } (tax data)
+
+▸ RESPONSIVE DESIGN BREAKPOINTS
+  - sm: 640px (small tablets)
+  - md: 768px (tablets)
+  - lg: 1024px (desktops)
+  - xl: 1280px (large desktops)
+
+▸ COLOR SCHEME
+  - Primary: Blue (600) → Indigo (600) → Purple (700) gradient
+  - Backgrounds: Blue-50 → Indigo-50 → Purple-100 gradient
+  - Cards: White with 80% opacity, backdrop blur
+  - Success: Green-600
+  - Warning: Yellow-600
+  - Error: Red-600
+
+▸ GEORGIAN TAX COMPLIANCE
+  All tax calculations follow official Georgian tax code:
+  - Standard Income Tax: 20%
+  - Small Business Tax: 1% on turnover (up to 500,000 GEL/year)
+  - VAT: 18%
+  - Pension: 2% employee + 2% employer
+  - Property Tax: 0.1% - 1% of value
+
+▸ ERROR HANDLING
+  - Form validation before submit
+  - Confirmation dialogs for destructive actions (delete)
+  - Disabled states for invalid operations
+  - Fallback to mock data if localStorage fails
+
+================================================================================
+                              END OF DOCUMENTATION
+================================================================================
+
+This documentation covers all functions in the Alpha-POC financial tracking
+application. For questions or updates, refer to the codebase or integration
+documentation files (CONVEX_INTEGRATION_GUIDE.md, CLERK_INTEGRATION_GUIDE.md,
+RS_GE_INTEGRATION.md).
+
+Last Updated: June 6, 2026
+Version: 1.0
