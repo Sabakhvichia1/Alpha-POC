@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { useAppContext } from '@/contexts/AppContext';
 
 type Message = {
@@ -142,7 +143,11 @@ export default function Chatbot() {
                     {m.role === 'user' ? <User className="w-4 h-4 text-white" /> : <Bot className="w-5 h-5 text-blue-600" />}
                   </div>
                   <div className={`p-3 rounded-2xl text-sm leading-relaxed ${m.role === 'user' ? 'bg-slate-900 text-white rounded-tr-sm' : 'bg-white border border-slate-100 shadow-sm text-slate-800 rounded-tl-sm'}`}>
-                    {m.content}
+                    <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-slate-100 prose-pre:text-slate-800 prose-a:text-blue-600">
+                      <ReactMarkdown>
+                        {m.content}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -168,7 +173,7 @@ export default function Chatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={language === 'ka' ? "შეიყვანეთ შეტყობინება..." : "Type your message..."}
-                className="flex-1 bg-slate-100 border-transparent focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl px-4 py-3 text-sm transition-all"
+                className="flex-1 bg-slate-100 text-slate-900 placeholder:text-slate-400 border-transparent focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-xl px-4 py-3 text-sm transition-all outline-none"
                 disabled={isLoading}
               />
               <button
