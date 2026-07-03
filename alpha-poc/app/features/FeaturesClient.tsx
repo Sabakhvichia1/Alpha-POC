@@ -91,7 +91,7 @@ export default function FeaturesClient() {
                 </div>
                 <div className="flex-1 w-full bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white shadow-lg">
                   <div className="h-40 flex items-center justify-center border-2 border-dashed border-emerald-200 rounded-xl">
-                    <span className="text-emerald-500 font-medium">Secure RS.ge API Tunnel</span>
+                    <span className="text-emerald-500 font-medium">{t.featTunnel}</span>
                   </div>
                 </div>
               </div>

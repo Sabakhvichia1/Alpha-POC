@@ -12,12 +12,12 @@ export default function BlogClient() {
   const t = getMarketingTranslation(language);
 
   const posts = [
-    { title: "Optimizing Your RS.ge Taxes in 2026", category: "Tax Strategy", image: "bg-blue-500" },
-    { title: "How to Switch to Small Business Status", category: "Guide", image: "bg-emerald-500" },
-    { title: "Understanding Pension Contributions", category: "Compliance", image: "bg-purple-500" },
-    { title: "Top 5 Mistakes in Payroll Management", category: "Management", image: "bg-rose-500" },
-    { title: "The Future of Financial Automation", category: "Trends", image: "bg-indigo-500" },
-    { title: "Maximizing Profit Margins", category: "Finance", image: "bg-cyan-500" },
+    { title: t.blgPost1Title, category: t.blgPost1Cat, image: "bg-blue-500" },
+    { title: t.blgPost2Title, category: t.blgPost2Cat, image: "bg-emerald-500" },
+    { title: t.blgPost3Title, category: t.blgPost3Cat, image: "bg-purple-500" },
+    { title: t.blgPost4Title, category: t.blgPost4Cat, image: "bg-rose-500" },
+    { title: t.blgPost5Title, category: t.blgPost5Cat, image: "bg-indigo-500" },
+    { title: t.blgPost6Title, category: t.blgPost6Cat, image: "bg-cyan-500" },
   ];
 
   return (
@@ -55,15 +55,15 @@ export default function BlogClient() {
               <div className="absolute inset-0 bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors duration-500"></div>
             </div>
             <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center">
-              <div className="text-blue-600 font-bold text-sm tracking-wider uppercase mb-4">Featured</div>
+              <div className="text-blue-600 font-bold text-sm tracking-wider uppercase mb-4">{t.blgFeatured}</div>
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 group-hover:text-blue-600 transition-colors">
-                The Ultimate Guide to Georgian Tax Compliance
+                {t.blgFeaturedTitle}
               </h2>
-              <p className="text-slate-600 mb-8 text-lg">A comprehensive breakdown of everything you need to know about navigating the complexities of the RS.ge portal and staying 100% compliant.</p>
+              <p className="text-slate-600 mb-8 text-lg">{t.blgFeaturedDesc}</p>
               <div className="flex items-center text-slate-500 text-sm font-medium">
-                <span>July 3, 2026</span>
+                <span>{t.blgDate}</span>
                 <span className="mx-3">•</span>
-                <span className="flex items-center"><Clock className="w-4 h-4 mr-1" /> 10 min read</span>
+                <span className="flex items-center"><Clock className="w-4 h-4 mr-1" /> {t.blgReadTime}</span>
               </div>
             </div>
           </motion.div>
@@ -100,12 +100,12 @@ export default function BlogClient() {
             
             <div className="relative z-10 max-w-2xl mx-auto">
               <h2 className="text-4xl font-bold mb-6">{t.blgNewsletter}</h2>
-              <p className="text-blue-100 mb-8 text-lg">Get the latest articles and tax updates delivered straight to your inbox.</p>
+              <p className="text-blue-100 mb-8 text-lg">{t.blgNewsletterDesc}</p>
               
               <form className="flex flex-col sm:flex-row gap-4 justify-center">
                 <input 
                   type="email" 
-                  placeholder="name@company.com" 
+                  placeholder={t.blgEmailPlaceholder} 
                   className="px-6 py-4 rounded-xl text-slate-900 w-full sm:w-96 focus:outline-none focus:ring-4 focus:ring-blue-300"
                 />
                 <button type="button" className="px-8 py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center">

@@ -51,7 +51,7 @@ export default function AboutClient() {
               </div>
               <h2 className="text-4xl font-bold text-slate-900">{t.abtMission}</h2>
               <p className="text-lg text-slate-600 leading-relaxed">
-                {t.abtMissionDesc} We aim to provide tools that were previously only available to large enterprises, directly into the hands of individual entrepreneurs and small teams across Georgia.
+                {t.abtMissionDesc} {t.abtMissionLong}
               </p>
             </motion.div>
 
@@ -64,8 +64,8 @@ export default function AboutClient() {
               <div className="absolute top-0 right-0 p-8 opacity-20">
                 <Building2 className="w-48 h-48" />
               </div>
-              <h3 className="text-3xl font-bold mb-4 relative z-10">Tbilisi, HQ</h3>
-              <p className="text-blue-100 relative z-10">Building the future from the heart of Georgia.</p>
+              <h3 className="text-3xl font-bold mb-4 relative z-10">{t.abtHQ}</h3>
+              <p className="text-blue-100 relative z-10">{t.abtHQDesc}</p>
             </motion.div>
           </div>
         </section>
@@ -88,8 +88,8 @@ export default function AboutClient() {
                     {/* Placeholder Avatar */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-slate-300 to-slate-200"></div>
                   </div>
-                  <h4 className="text-lg font-bold text-slate-900">Team Member</h4>
-                  <p className="text-sm text-slate-500">Position</p>
+                  <h4 className="text-lg font-bold text-slate-900">{t.abtTeamMember}</h4>
+                  <p className="text-sm text-slate-500">{t.abtPosition}</p>
                 </motion.div>
               ))}
             </div>

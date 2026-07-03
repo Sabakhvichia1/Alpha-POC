@@ -49,7 +49,7 @@ export default function ContactClient() {
                   </div>
                   <div className="ml-6">
                     <h3 className="text-xl font-bold text-slate-900">{t.cntAddressTitle}</h3>
-                    <p className="mt-2 text-slate-600">{t.cntAddressDesc}<br/>12 Rustaveli Ave.</p>
+                    <p className="mt-2 text-slate-600">{t.cntAddressDesc}<br/>{t.cntAddress}</p>
                   </div>
                 </div>
 
@@ -58,8 +58,8 @@ export default function ContactClient() {
                     <Phone className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="ml-6">
-                    <h3 className="text-xl font-bold text-slate-900">Phone</h3>
-                    <p className="mt-2 text-slate-600">+995 555 123 456</p>
+                    <h3 className="text-xl font-bold text-slate-900">{t.cntPhoneTitle}</h3>
+                    <p className="mt-2 text-slate-600">{t.cntPhone}</p>
                   </div>
                 </div>
 
@@ -68,8 +68,8 @@ export default function ContactClient() {
                     <Mail className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="ml-6">
-                    <h3 className="text-xl font-bold text-slate-900">Email</h3>
-                    <p className="mt-2 text-slate-600">hello@financialmonitoring.ge</p>
+                    <h3 className="text-xl font-bold text-slate-900">{t.cntEmailTitle}</h3>
+                    <p className="mt-2 text-slate-600">{t.cntEmail}</p>
                   </div>
                 </div>
               </motion.div>
@@ -88,17 +88,17 @@ export default function ContactClient() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormName}</label>
-                    <input type="text" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="John Doe" />
+                    <input type="text" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder={t.cntNamePlaceholder} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormEmail}</label>
-                    <input type="email" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="john@example.com" />
+                    <input type="email" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder={t.cntEmailPlaceholder} />
                   </div>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormMessage}</label>
-                  <textarea rows={5} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" placeholder="How can we help you?"></textarea>
+                  <textarea rows={5} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" placeholder={t.cntMessagePlaceholder}></textarea>
                 </div>
 
                 <button type="button" className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center group">

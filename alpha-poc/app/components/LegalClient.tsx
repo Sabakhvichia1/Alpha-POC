@@ -33,7 +33,7 @@ export default function LegalClient({ pageKey }: LegalClientProps) {
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">{title}</h1>
             <p className="text-xl text-slate-600">{subtitle}</p>
-            <p className="text-sm text-slate-400 mt-6 font-medium uppercase tracking-wider">Last updated: July 3, 2026</p>
+            <p className="text-sm text-slate-400 mt-6 font-medium uppercase tracking-wider">{mt.lglUpdated}</p>
           </div>
         </div>
 
@@ -51,10 +51,10 @@ export default function LegalClient({ pageKey }: LegalClientProps) {
                   2. {section2Title}
                 </a>
                 <a href="#" className="block text-sm text-slate-500 hover:text-slate-900 transition-colors">
-                  3. User Obligations
+                  {mt.lglUserObligations}
                 </a>
                 <a href="#" className="block text-sm text-slate-500 hover:text-slate-900 transition-colors">
-                  4. Governing Law
+                  {mt.lglGoverningLaw}
                 </a>
               </nav>
             </div>
@@ -64,7 +64,7 @@ export default function LegalClient({ pageKey }: LegalClientProps) {
           <div className="flex-1 prose prose-slate prose-lg max-w-none prose-headings:text-slate-900 prose-a:text-blue-600">
             
             <p className="lead text-xl text-slate-600 mb-12">
-              Welcome to the {title} documentation. This agreement outlines the rules and regulations for the use of Financial Monitoring's Website and App.
+              {pageKey === 'privacy' ? mt.lglWelcomePrivacy : mt.lglWelcomeTerms}
             </p>
 
             <div id="section-1" className="scroll-mt-32 mb-16">
@@ -73,7 +73,7 @@ export default function LegalClient({ pageKey }: LegalClientProps) {
                 {section1Desc}
               </p>
               <p className="text-slate-600 leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                {mt.lglFiller1}
               </p>
             </div>
 
@@ -85,9 +85,9 @@ export default function LegalClient({ pageKey }: LegalClientProps) {
                 {section2Desc}
               </p>
               <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <h4 className="font-bold text-slate-900 mb-2">Important Note</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{mt.lglImportantNote}</h4>
                 <p className="text-sm text-slate-600 mb-0">
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  {mt.lglFiller2}
                 </p>
               </div>
             </div>

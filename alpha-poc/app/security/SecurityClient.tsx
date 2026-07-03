@@ -51,7 +51,7 @@ export default function SecurityClient() {
           >
             <Shield className="w-10 h-10 text-emerald-400 mb-6" />
             <h3 className="text-xl font-bold mb-3">{t.secFeature1}</h3>
-            <p className="text-slate-400 text-sm">All data transmitted to and from our servers is encrypted using 256-bit AES encryption.</p>
+            <p className="text-slate-400 text-sm">{t.secEncDesc}</p>
           </motion.div>
 
           <motion.div 
@@ -60,7 +60,7 @@ export default function SecurityClient() {
           >
             <Lock className="w-10 h-10 text-emerald-400 mb-6" />
             <h3 className="text-xl font-bold mb-3">{t.secFeature2}</h3>
-            <p className="text-slate-400 text-sm">Add an extra layer of security to your account with time-based OTPs.</p>
+            <p className="text-slate-400 text-sm">{t.secOtpDesc}</p>
           </motion.div>
 
           <motion.div 
@@ -69,7 +69,7 @@ export default function SecurityClient() {
           >
             <FileCheck className="w-10 h-10 text-emerald-400 mb-6" />
             <h3 className="text-xl font-bold mb-3">{t.secFeature3}</h3>
-            <p className="text-slate-400 text-sm">Independent security experts regularly audit our infrastructure for vulnerabilities.</p>
+            <p className="text-slate-400 text-sm">{t.secAuditDesc}</p>
           </motion.div>
         </section>
 
@@ -84,9 +84,9 @@ export default function SecurityClient() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                 </span>
-                <span className="text-emerald-400 font-medium tracking-wider text-sm uppercase">System Status</span>
+                <span className="text-emerald-400 font-medium tracking-wider text-sm uppercase">{t.secSystemStatus}</span>
               </div>
-              <h4 className="text-4xl font-bold text-white mb-2">All Systems Operational</h4>
+              <h4 className="text-4xl font-bold text-white mb-2">{t.secAllOperational}</h4>
               <p className="text-slate-400">{t.secStats2}</p>
             </div>
             

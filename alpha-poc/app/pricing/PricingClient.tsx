@@ -59,12 +59,12 @@ export default function PricingClient() {
               <p className="text-slate-500 mb-6">{t.prcStarterDesc}</p>
               <div className="mb-8">
                 <span className="text-5xl font-extrabold">₾{isAnnual ? '39' : '49'}</span>
-                <span className="text-slate-500">/mo</span>
+                <span className="text-slate-500">{t.prcPerMonth}</span>
               </div>
               <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> Up to 5 employees</li>
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> Basic RS.ge sync</li>
-                <li className="flex items-center gap-3 text-slate-400"><X className="w-5 h-5" /> Analytics Dashboard</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> {t.prcUpTo5}</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> {t.prcBasicSync}</li>
+                <li className="flex items-center gap-3 text-slate-400"><X className="w-5 h-5" /> {t.prcAnalyticsDashboard}</li>
               </ul>
               <Link href="/cabinet" className="block w-full py-3 px-4 bg-slate-100 text-slate-900 text-center font-semibold rounded-xl hover:bg-slate-200 transition-colors">
                 {t.prcGetStarted}
@@ -80,12 +80,12 @@ export default function PricingClient() {
               <p className="text-slate-400 mb-6">{t.prcProDesc}</p>
               <div className="mb-8">
                 <span className="text-5xl font-extrabold text-white">₾{isAnnual ? '79' : '99'}</span>
-                <span className="text-slate-400">/mo</span>
+                <span className="text-slate-400">{t.prcPerMonth}</span>
               </div>
               <ul className="space-y-4 mb-8 text-slate-300">
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> Up to 50 employees</li>
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> Full RS.ge sync</li>
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> Analytics Dashboard</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> {t.prcUpTo50}</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> {t.prcFullSync}</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-400" /> {t.prcAnalyticsDashboard}</li>
               </ul>
               <Link href="/cabinet" className="block w-full py-3 px-4 bg-blue-600 text-white text-center font-semibold rounded-xl hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(37,99,235,0.4)]">
                 {t.prcGetStarted}
@@ -97,12 +97,12 @@ export default function PricingClient() {
               <h3 className="text-2xl font-bold text-slate-900 mb-2">{t.prcEnterprise}</h3>
               <p className="text-slate-500 mb-6">{t.prcEnterpriseDesc}</p>
               <div className="mb-8">
-                <span className="text-5xl font-extrabold">Custom</span>
+                <span className="text-5xl font-extrabold">{t.prcCustom}</span>
               </div>
               <ul className="space-y-4 mb-8">
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> Unlimited employees</li>
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> Dedicated Account Manager</li>
-                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> Custom API Access</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> {t.prcUnlimited}</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> {t.prcDedicatedManager}</li>
+                <li className="flex items-center gap-3"><Check className="w-5 h-5 text-blue-500" /> {t.prcCustomAPI}</li>
               </ul>
               <Link href="/contact" className="block w-full py-3 px-4 bg-slate-100 text-slate-900 text-center font-semibold rounded-xl hover:bg-slate-200 transition-colors">
                 {t.prcContact}
