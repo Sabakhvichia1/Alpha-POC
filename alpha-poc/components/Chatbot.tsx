@@ -21,20 +21,28 @@ export default function Chatbot() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize welcome message
+  // Initialize or update welcome message when language changes
   useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: 'welcome',
-          role: 'model',
-          content: language === 'ka' 
-            ? 'გამარჯობა! მე ვარ თქვენი ხელოვნური ინტელექტის ასისტენტი. რით შემიძლია დაგეხმაროთ დღეს?'
-            : 'Hello! I am your AI assistant. How can I help you navigate the platform today?'
-        }
-      ]);
-    }
-  }, [language, messages.length]);
+    const welcomeContent = language === 'ka' 
+      ? 'გამარჯობა! მე ვარ გელამხუთი (Gelamxuti), თქვენი ხელოვნური ინტელექტის ასისტენტი. რით შემიძლია დაგეხმაროთ დღეს?'
+      : 'Hello! I am Gelamxuti, your AI assistant. How can I help you navigate the platform today?';
+
+    setMessages((prev) => {
+      // If no messages, set the welcome message
+      if (prev.length === 0) {
+        return [{ id: 'welcome', role: 'model', content: welcomeContent }];
+      }
+      
+      // If messages exist and the first one is our welcome message, update its language
+      if (prev[0].id === 'welcome') {
+        const newMessages = [...prev];
+        newMessages[0] = { ...newMessages[0], content: welcomeContent };
+        return newMessages;
+      }
+
+      return prev;
+    });
+  }, [language]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -65,6 +73,7 @@ export default function Chatbot() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          language,
           messages: [...messages, userMessage].map((m) => ({
             role: m.role,
             content: m.content,
@@ -117,7 +126,7 @@ export default function Chatbot() {
               <div className="flex items-center gap-2">
                 <Bot className="w-6 h-6" />
                 <div>
-                  <h3 className="font-bold">Financial Assistant</h3>
+                  <h3 className="font-bold">Gelamxuti</h3>
                   <p className="text-xs text-blue-100 flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     Online
