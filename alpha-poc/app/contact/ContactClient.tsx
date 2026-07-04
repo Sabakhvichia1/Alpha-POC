@@ -5,11 +5,32 @@ import { getMarketingTranslation } from "@/lib/marketing-translations";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 export default function ContactClient() {
   const { language } = useAppContext();
   const t = getMarketingTranslation(language);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('Failed to send');
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -84,25 +105,68 @@ export default function ContactClient() {
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
               
-              <form className="space-y-6 relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormName}</label>
-                    <input type="text" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder={t.cntNamePlaceholder} />
+                    <input 
+                      type="text" 
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                      placeholder={t.cntNamePlaceholder} 
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormEmail}</label>
-                    <input type="email" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder={t.cntEmailPlaceholder} />
+                    <input 
+                      type="email" 
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                      placeholder={t.cntEmailPlaceholder} 
+                    />
                   </div>
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">{t.cntFormMessage}</label>
-                  <textarea rows={5} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" placeholder={t.cntMessagePlaceholder}></textarea>
+                  <textarea 
+                    rows={5} 
+                    required
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" 
+                    placeholder={t.cntMessagePlaceholder}
+                  ></textarea>
                 </div>
 
-                <button type="button" className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center group">
-                  {t.cntFormSubmit} <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                {status === 'error' && (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-xl flex items-center border border-red-100">
+                    <AlertCircle className="w-5 h-5 mr-3 flex-shrink-0" />
+                    <p className="text-sm">Something went wrong. Please try again.</p>
+                  </div>
+                )}
+                
+                {status === 'success' && (
+                  <div className="p-4 bg-emerald-50 text-emerald-700 rounded-xl flex items-center border border-emerald-100">
+                    <CheckCircle2 className="w-5 h-5 mr-3 flex-shrink-0" />
+                    <p className="text-sm">Your message has been sent successfully!</p>
+                  </div>
+                )}
+
+                <button 
+                  type="submit" 
+                  disabled={status === 'loading'}
+                  className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center group disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {status === 'loading' ? (
+                    <>Sending... <Loader2 className="w-5 h-5 ml-2 animate-spin" /></>
+                  ) : (
+                    <>{t.cntFormSubmit} <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>
+                  )}
                 </button>
               </form>
             </motion.div>
