@@ -114,7 +114,7 @@ export default function ContactClient() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow text-slate-900" 
                       placeholder={t.cntNamePlaceholder} 
                     />
                   </div>
@@ -125,7 +125,7 @@ export default function ContactClient() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" 
+                      className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow text-slate-900" 
                       placeholder={t.cntEmailPlaceholder} 
                     />
                   </div>
@@ -138,7 +138,7 @@ export default function ContactClient() {
                     required
                     value={formData.message}
                     onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none" 
+                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none text-slate-900" 
                     placeholder={t.cntMessagePlaceholder}
                   ></textarea>
                 </div>
