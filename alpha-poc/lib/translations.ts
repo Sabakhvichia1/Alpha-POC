@@ -44,6 +44,23 @@ export const translations = {
     amount: 'თანხა',
     dueDate: 'ბოლო ვადა',
     status: 'სტატუსი',
+    action: 'მოქმედება',
+    
+    // Payroll Page
+    payrollPageSubtitle: 'მართეთ ხელფასები და გადახდების ისტორია.',
+    runAllPayroll: '▶ ყველა ხელფასის გაშვება',
+    pendingPayroll: 'მიმდინარე ხელფასები',
+    totalPaidThisPeriod: 'სულ გადახდილი (ამ პერიოდში)',
+    process: 'დამუშავება',
+    paymentDate: 'გადახდის თარიღი',
+    noPendingPayroll: 'მიმდინარე ხელფასები არ არის. ყველა თანამშრომელი ანაზღაურებულია!',
+    noPaymentHistory: 'გადახდების ისტორია ცარიელია. გაუშვით ხელფასები დასაწყებად!',
+    paymentHistory: 'გადახდების ისტორია',
+    payments: 'გადახდა',
+    statusPending: 'მიმდინარე',
+    statusPaid: 'გადახდილი',
+    statusProcessing: 'მუშავდება',
+    statusFailed: 'შეცდომა',
     
     // Activity Types
     payrollRunCompleted: 'ხელფასის გაანგარიშება დასრულდა',
@@ -224,6 +241,23 @@ export const translations = {
     amount: 'Amount',
     dueDate: 'Due Date',
     status: 'Status',
+    action: 'Action',
+    
+    // Payroll Page
+    payrollPageSubtitle: 'Manage payroll runs and payment history.',
+    runAllPayroll: '▶ Run All Payroll',
+    pendingPayroll: 'Pending Payroll',
+    totalPaidThisPeriod: 'Total Paid (This Period)',
+    process: 'Process',
+    paymentDate: 'Payment Date',
+    noPendingPayroll: 'No pending payroll. All employees have been paid!',
+    noPaymentHistory: 'No payment history yet. Run payroll to get started!',
+    paymentHistory: 'Payment History',
+    payments: 'payments',
+    statusPending: 'Pending',
+    statusPaid: 'Paid',
+    statusProcessing: 'Processing',
+    statusFailed: 'Failed',
     
     // Activity Types
     payrollRunCompleted: 'Payroll run completed for',
