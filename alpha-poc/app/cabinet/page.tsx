@@ -9,16 +9,20 @@ import {
   formatCurrency,
   formatDate,
   getStatusColor,
+  generateMockMonthlyFinancials,
 } from '@/lib/mockData';
 import { useAppContext } from '@/contexts/AppContext';
 import { getTranslation } from '@/lib/translations';
 
 export default function Dashboard() {
   const router = useRouter();
-  const { language } = useAppContext();
+  const { language, isPlanned } = useAppContext();
   const t = getTranslation(language);
   const [payrollRecords, setPayrollRecords] = useState(generatePayrollRecords());
   const [mounted, setMounted] = useState(false);
+
+  const financials = generateMockMonthlyFinancials(isPlanned);
+  const currentMonthFinancials = financials[new Date().getMonth()];
 
   useEffect(() => {
     setMounted(true);
@@ -97,6 +101,25 @@ export default function Dashboard() {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 hover:scale-105">
             <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">{t.nextScheduledRun}</p>
             <p className="font-bold text-gray-900 break-words" style={{ fontSize: '14px' }}>{formatDate(nextRun.toISOString())}</p>
+          </div>
+        </div>
+
+        {/* Business Overview Section */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-white shadow-lg p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">{t.businessOverview}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg p-4 border border-emerald-200 transition-all duration-300 hover:scale-105 shadow-sm">
+              <p className="text-emerald-800 text-sm font-medium mb-1">{t.grossRevenue}</p>
+              <p className="text-2xl font-bold text-emerald-900">{formatCurrency(currentMonthFinancials.grossRevenue)}</p>
+            </div>
+            <div className="bg-gradient-to-br from-rose-50 to-rose-100 rounded-lg p-4 border border-rose-200 transition-all duration-300 hover:scale-105 shadow-sm">
+              <p className="text-rose-800 text-sm font-medium mb-1">{t.totalExpenses}</p>
+              <p className="text-2xl font-bold text-rose-900">{formatCurrency(currentMonthFinancials.totalExpenses)}</p>
+            </div>
+            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200 transition-all duration-300 hover:scale-105 shadow-sm">
+              <p className="text-indigo-800 text-sm font-medium mb-1">{t.netProfit}</p>
+              <p className="text-2xl font-bold text-indigo-900">{formatCurrency(currentMonthFinancials.netProfit)}</p>
+            </div>
           </div>
         </div>
 

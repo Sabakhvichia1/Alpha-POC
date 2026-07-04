@@ -28,6 +28,7 @@ export const translations = {
     // Dashboard
     dashboardTitle: 'მთავარი',
     dashboardSubtitle: 'კეთილი იყოს თქვენი მობრძანება! აქ თქვენი ფინანსური მიმოხილვა',
+    businessOverview: 'ბიზნესის მიმოხილვა',
     totalPayrollThisMonth: 'ჯამური ხელფასები ამ თვეში',
     pendingPayments: 'მიმდინარე გადახდები',
     activeEmployees: 'აქტიური თანამშრომლები',
@@ -207,6 +208,7 @@ export const translations = {
     // Dashboard
     dashboardTitle: 'Dashboard',
     dashboardSubtitle: 'Welcome back! Here\'s your payroll overview',
+    businessOverview: 'Business Overview',
     totalPayrollThisMonth: 'Total Payroll This Month',
     pendingPayments: 'Pending Payments',
     activeEmployees: 'Active Employees',
